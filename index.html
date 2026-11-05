@@ -655,10 +655,12 @@
 
     async function saveProduct(e) {
       e.preventDefault();
+      
+      const oldPriceVal = document.getElementById('p-old-price').value;
       const newProduct = {
         name: document.getElementById('p-name').value,
         price: parseFloat(document.getElementById('p-price').value),
-        oldPrice: document.getElementById('p-old-price').value ? parseFloat(document.getElementById('p-old-price').value) : null,
+        oldprice: oldPriceVal ? parseFloat(oldPriceVal) : null,
         category: document.getElementById('p-category').value,
         brand: document.getElementById('p-brand').value,
         image: document.getElementById('p-image').value,
@@ -668,7 +670,7 @@
       const { error } = await supabaseClient.from('products').insert([newProduct]);
 
       if (error) {
-        openToast('❌ حدث خطأ أثناء الحفظ بالسيرفر');
+        openToast('❌ خطأ: ' + error.message);
         console.error(error);
       } else {
         openToast('✨ تم رفع المنتج للسيرفر بنجاح');
