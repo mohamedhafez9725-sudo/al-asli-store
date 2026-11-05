@@ -453,12 +453,13 @@
         const card = document.createElement('div');
         card.className = "group glass-card rounded-2xl overflow-hidden hover:border-gold-500/50 transition-all duration-300 flex flex-col justify-between max-w-full mx-auto w-full";
         
+        let oldPriceVal = p.oldPrice !== undefined ? p.oldPrice : p.oldprice;
         let priceHtml = `<span class="text-sm font-bold text-gold-400">${Number(p.price).toLocaleString()} EGP</span>`;
-        if (p.oldPrice && Number(p.oldPrice) > Number(p.price)) {
+        if (oldPriceVal && Number(oldPriceVal) > Number(p.price)) {
           priceHtml = `
             <div class="flex items-center gap-2">
               <span class="text-sm font-bold text-gold-400">${Number(p.price).toLocaleString()} EGP</span>
-              <span class="text-xs text-gray-500 line-through">${Number(p.oldPrice).toLocaleString()} EGP</span>
+              <span class="text-xs text-gray-500 line-through">${Number(oldPriceVal).toLocaleString()} EGP</span>
             </div>
           `;
         }
@@ -625,17 +626,20 @@
     function closeAdminDashboard() { document.getElementById('admin-dashboard-modal').classList.add('opacity-0', 'pointer-events-none'); }
     
     function renderAdminTable() {
-      document.getElementById('admin-product-table-body').innerHTML = products.map(p => `
-        <tr class="border-b border-gray-800">
-          <td class="p-2"><img src="${p.image}" class="w-8 h-8 object-contain bg-black rounded"></td>
-          <td class="p-2 text-white">${p.name}</td>
-          <td class="p-2 text-gold-400">${p.price} EGP ${p.oldPrice ? `<span class="text-gray-500 line-through text-[10px]">(${p.oldPrice})</span>` : ''}</td>
-          <td class="p-2 text-gray-400 capitalize">${p.category}</td>
-          <td class="p-2 text-center space-x-2">
-            <button onclick="deleteProductFromSupabase(${p.id})" class="text-red-400 hover:text-red-500" title="حذف"><i class="fa-solid fa-trash"></i></button>
-          </td>
-        </tr>
-      `).join('');
+      document.getElementById('admin-product-table-body').innerHTML = products.map(p => {
+        let oldPriceVal = p.oldPrice !== undefined ? p.oldPrice : p.oldprice;
+        return `
+          <tr class="border-b border-gray-800">
+            <td class="p-2"><img src="${p.image}" class="w-8 h-8 object-contain bg-black rounded"></td>
+            <td class="p-2 text-white">${p.name}</td>
+            <td class="p-2 text-gold-400">${p.price} EGP ${oldPriceVal ? `<span class="text-gray-500 line-through text-[10px]">(${oldPriceVal})</span>` : ''}</td>
+            <td class="p-2 text-gray-400 capitalize">${p.category}</td>
+            <td class="p-2 text-center space-x-2">
+              <button onclick="deleteProductFromSupabase(${p.id})" class="text-red-400 hover:text-red-500" title="حذف"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>
+        `;
+      }).join('');
     }
 
     function openProductForm() {
@@ -660,7 +664,7 @@
       const newProduct = {
         name: document.getElementById('p-name').value,
         price: parseFloat(document.getElementById('p-price').value),
-        oldprice: oldPriceVal ? parseFloat(oldPriceVal) : null,
+        oldPrice: oldPriceVal ? parseFloat(oldPriceVal) : null,
         category: document.getElementById('p-category').value,
         brand: document.getElementById('p-brand').value,
         image: document.getElementById('p-image').value,
