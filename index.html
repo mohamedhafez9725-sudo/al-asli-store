@@ -1,265 +1,714 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" class="dark scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EL ASLI | الأصلي</title>
-    <!-- مكتبة Supabase للربط السحابي -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        :root {
-            --bg-color: #0b0b0b;
-            --card-bg: #141414;
-            --gold: #d4af37;
-            --gold-light: #f3e5ab;
-            --text-main: #ffffff;
-            --text-muted: #a0a0a0;
-            --border: #262626;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>EL ASLI | الأصلي - High-End Luxury Collection</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Supabase JS Library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Elfsight Instagram Feed Script -->
+  <script src="https://elfsightcdn.com/platform.js" async></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            gold: {
+              300: '#FCE788',
+              400: '#F3D250',
+              500: '#D4AF37',
+              600: '#AA820A',
+              700: '#856404',
+            },
+            charcoal: {
+              800: '#121212',
+              900: '#0A0A0A',
+              950: '#050505',
+            }
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            arabic: ['"Amiri"', 'serif'],
+          },
+          animation: {
+            'marquee': 'marquee 22s linear infinite',
+          },
+          keyframes: {
+            marquee: {
+              '0%': { transform: 'translateX(0%)' },
+              '100%': { transform: 'translateX(-50%)' },
+            }
+          }
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; }
-        header { background: rgba(11, 11, 11, 0.95); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 1.5rem; font-weight: bold; color: var(--gold); letter-spacing: 2px; }
-        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
-        .hero { text-align: center; padding: 3rem 1rem; background: linear-gradient(to bottom, #1a1a1a, var(--bg-color)); border-radius: 12px; margin-bottom: 2rem; border: 1px solid var(--border); }
-        .hero h1 { color: var(--gold); font-size: 2.5rem; margin-bottom: 0.5rem; }
-        .hero p { color: var(--text-muted); }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem; }
-        .product-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: transform 0.3s; position: relative; }
-        .product-card:hover { transform: translateY(-5px); border-color: var(--gold); }
-        .product-img { width: 100%; height: 250px; object-fit: cover; background: #222; }
-        .product-info { padding: 1.2rem; }
-        .product-tag { position: absolute; top: 10px; right: 10px; background: var(--gold); color: #000; padding: 0.2rem 0.6rem; font-size: 0.8rem; font-weight: bold; border-radius: 4px; }
-        .product-brand { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; margin-bottom: 0.3rem; }
-        .product-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 0.5rem; }
-        .product-pricing { display: flex; gap: 0.8rem; align-items: center; margin-bottom: 1rem; }
-        .current-price { color: var(--gold); font-size: 1.2rem; font-weight: bold; }
-        .old-price { color: var(--text-muted); text-decoration: line-through; font-size: 0.9rem; }
-        .btn-buy { width: 100%; background: var(--gold); color: #000; border: none; padding: 0.7rem; font-weight: bold; border-radius: 5px; cursor: pointer; transition: background 0.3s; }
-        .btn-buy:hover { background: var(--gold-light); }
-        
-        /* لوحة الإدارة */
-        #admin-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; padding: 1rem; }
-        .modal-content { background: var(--card-bg); border: 1px solid var(--gold); width: 100%; max-width: 600px; padding: 2rem; border-radius: 12px; max-height: 90vh; overflow-y: auto; }
-        .modal-content h2 { color: var(--gold); margin-bottom: 1.5rem; text-align: center; }
-        .form-group { margin-bottom: 1rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-muted); }
-        .form-group input, .form-group select { width: 100%; padding: 0.8rem; background: #1c1c1c; border: 1px solid var(--border); color: #fff; border-radius: 6px; }
-        .form-group input:focus { border-color: var(--gold); outline: none; }
-        .btn-primary { width: 100%; background: var(--gold); color: #000; padding: 0.9rem; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; margin-top: 1rem; }
-        .admin-list { margin-top: 1.5rem; border-top: 1px solid var(--border); padding-top: 1rem; }
-        .admin-item { display: flex; justify-content: space-between; align-items: center; background: #1c1c1c; padding: 0.7rem; margin-bottom: 0.5rem; border-radius: 6px; }
-        .btn-delete { background: #ff4d4d; color: #fff; border: none; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; }
-        
-        footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-muted); margin-top: 3rem; font-size: 0.9rem; }
-        footer span { cursor: pointer; transition: color 0.3s; }
-        footer span:hover { color: var(--gold); }
-    </style>
+      }
+    }
+  </script>
+
+  <style>
+    *, ::before, ::after { box-sizing: border-box; }
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden !important;
+      background-color: #050505;
+    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0a0a0a; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #d4af37; }
+
+    .glass-header {
+      background: rgba(10, 10, 10, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .glass-card {
+      background: rgba(18, 18, 18, 0.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(212, 175, 55, 0.15);
+    }
+    .text-gold-gradient {
+      background: linear-gradient(135deg, #FFF099 0%, #D4AF37 50%, #997A15 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .bg-gold-gradient {
+      background: linear-gradient(135deg, #FCE788 0%, #D4AF37 50%, #856404 100%);
+    }
+    .gold-glow:hover {
+      box-shadow: 0 0 25px rgba(212, 175, 55, 0.25);
+    }
+  </style>
 </head>
-<body>
 
-    <header>
-        <div class="logo">EL ASLI | الأصلي</div>
+<body class="bg-charcoal-950 text-gray-200 font-sans antialiased min-h-screen flex flex-col selection:bg-gold-500 selection:text-black">
+
+  <!-- TOP MARQUEE -->
+  <div class="bg-gradient-to-r from-charcoal-950 via-gold-700 to-charcoal-950 text-gold-300 text-xs tracking-wider uppercase py-2 border-b border-gold-500/20 overflow-hidden relative z-50 select-none">
+    <div class="whitespace-nowrap flex animate-marquee">
+      <div class="flex items-center space-x-12 shrink-0 pr-12">
+        <span class="flex items-center gap-2 font-medium">🚚 Fast delivery within 1-3 days</span>
+        <span class="text-gold-500/40">✦</span>
+        <span class="flex items-center gap-2 font-medium">🇪🇬 Shipping all over Egypt</span>
+        <span class="text-gold-500/40">✦</span>
+        <span class="flex items-center gap-2 font-medium">👑 100% Authentic & guaranteed</span>
+        <span class="text-gold-500/40">✦</span>
+      </div>
+      <div class="flex items-center space-x-12 shrink-0 pr-12">
+        <span class="flex items-center gap-2 font-medium">🚚 Fast delivery within 1-3 days</span>
+        <span class="text-gold-500/40">✦</span>
+        <span class="flex items-center gap-2 font-medium">🇪🇬 Shipping all over Egypt</span>
+        <span class="text-gold-500/40">✦</span>
+        <span class="flex items-center gap-2 font-medium">👑 100% Authentic & guaranteed</span>
+        <span class="text-gold-500/40">✦</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="sticky top-0 z-40 glass-header border-b border-gold-500/20 transition-all duration-300 w-full">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div class="flex items-center">
+        <button id="menu-toggle-btn" class="p-2.5 text-gray-300 hover:text-gold-400 transition-colors focus:outline-none rounded-lg hover:bg-white/5 flex items-center gap-2 group">
+          <i class="fa-solid fa-bars text-xl group-hover:scale-110 transition-transform"></i>
+          <span class="hidden md:inline text-xs font-semibold tracking-widest uppercase text-gray-400 group-hover:text-gold-400">Menu</span>
+        </button>
+      </div>
+
+      <a href="#" class="flex flex-col items-center justify-center group py-1">
+        <span class="font-serif text-2xl sm:text-3xl tracking-[0.25em] font-bold text-gold-gradient uppercase transition-transform duration-300 group-hover:scale-105">EL ASLI</span>
+        <span class="font-arabic text-sm tracking-widest text-gold-400/90 -mt-1">الأصــــلي</span>
+      </a>
+
+      <div class="flex items-center space-x-2 sm:space-x-4">
+        <button id="search-btn" class="p-2.5 text-gray-300 hover:text-gold-400 transition-colors rounded-lg hover:bg-white/5" title="Search">
+          <i class="fa-solid fa-magnifying-glass text-lg"></i>
+        </button>
+        <button onclick="promptAdminLogin()" class="hidden sm:flex p-2.5 text-gold-400 hover:text-gold-300 transition-colors rounded-lg hover:bg-white/5 items-center gap-1.5 text-xs font-medium" title="Admin">
+          <i class="fa-solid fa-shield-halved text-base"></i>
+          <span>Admin</span>
+        </button>
+        <button id="cart-btn" class="p-2.5 text-gray-300 hover:text-gold-400 transition-colors relative rounded-lg hover:bg-white/5" title="Cart">
+          <i class="fa-solid fa-bag-shopping text-xl"></i>
+          <span id="cart-count" class="absolute top-1 right-1 bg-gold-500 text-charcoal-950 font-bold text-[10px] w-4 h-4 rounded-full flex items-center justify-center transition-all scale-0">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- NAV DRAWER -->
+  <div id="nav-drawer" class="fixed inset-0 z-50 pointer-events-none transition-opacity duration-300 opacity-0">
+    <div id="nav-drawer-overlay" class="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity"></div>
+    <div id="nav-drawer-content" class="absolute top-0 left-0 h-full w-full max-w-sm bg-charcoal-900 border-r border-gold-500/20 shadow-2xl p-6 flex flex-col justify-between transform -translate-x-full transition-transform duration-300 ease-in-out pointer-events-auto">
+      <div>
+        <div class="flex items-center justify-between pb-6 border-b border-gray-800">
+          <div class="flex items-center gap-2">
+            <span class="font-serif text-xl tracking-widest font-bold text-gold-400">EL ASLI</span>
+            <span class="text-xs font-arabic text-gold-500/80">الأصلي</span>
+          </div>
+          <button id="close-nav-btn" class="p-2 text-gray-400 hover:text-white rounded-full"><i class="fa-solid fa-xmark text-xl"></i></button>
+        </div>
+        <nav class="mt-8 space-y-4">
+          <a href="#catalog" onclick="closeNavDrawer()" class="block py-2.5 px-3 text-sm tracking-widest uppercase font-semibold text-gold-400 hover:bg-gold-500/10 rounded-lg">Watches & Accessories</a>
+          <a href="#instagram-feed" onclick="closeNavDrawer()" class="block py-2.5 px-3 text-sm tracking-widest uppercase font-medium text-gray-300 hover:text-gold-400 hover:bg-white/5 rounded-lg">Instagram Gallery</a>
+          <a href="#about" onclick="closeNavDrawer()" class="block py-2.5 px-3 text-sm tracking-widest uppercase font-medium text-gray-300 hover:text-gold-400 hover:bg-white/5 rounded-lg">About Us</a>
+          <a href="javascript:void(0)" onclick="promptAdminLogin(); closeNavDrawer();" class="block py-2.5 px-3 text-sm tracking-widest uppercase font-medium text-gold-400 hover:bg-gold-500/10 rounded-lg flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved"></i> Admin Panel
+          </a>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO SECTION -->
+  <section class="relative min-h-[80vh] flex items-center justify-center overflow-hidden py-16 px-4 border-b border-gold-500/10">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gold-900/20 via-charcoal-950 to-charcoal-950"></div>
+    <div class="relative z-10 max-w-4xl mx-auto text-center space-y-6">
+      <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full glass-card text-gold-300 text-xs tracking-widest uppercase font-semibold">
+        <span class="w-2 h-2 rounded-full bg-gold-400 animate-ping"></span> Original Luxury Heritage | الأصلي
+      </div>
+      <h1 class="font-serif text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white leading-tight">
+        Elegance Beyond <br><span class="text-gold-gradient font-serif italic">Compromise</span>
+      </h1>
+      <p class="max-w-xl mx-auto text-gray-400 text-sm sm:text-base font-light">
+        Discover curated timepieces, luxury eyewear, fine fragrances, and bespoke accessories in Egypt.
+      </p>
+      <div class="pt-2">
+        <a href="#catalog" class="inline-block px-8 py-3.5 bg-gold-gradient text-charcoal-950 font-semibold text-xs tracking-[0.2em] uppercase rounded-lg shadow-lg hover:brightness-110 transition-all gold-glow">Explore Collection</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATALOG -->
+  <section id="catalog" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex-grow w-full">
+    <div class="text-center space-y-3 mb-10">
+      <span class="text-xs font-semibold tracking-widest text-gold-400 uppercase">Curated Catalog</span>
+      <h2 class="font-serif text-2xl sm:text-4xl font-bold text-white">The Luxury Collection</h2>
+      <div class="w-16 h-0.5 bg-gold-500 mx-auto rounded-full"></div>
+    </div>
+
+    <div class="flex items-center justify-center gap-2 sm:gap-4 overflow-x-auto pb-4 mb-8 no-scrollbar">
+      <button onclick="filterProducts('all')" class="cat-btn active px-4 py-2 rounded-full text-xs font-semibold uppercase transition-all bg-gold-500 text-charcoal-950 shadow-md whitespace-nowrap" data-cat="all">All Items</button>
+      <button onclick="filterProducts('watches')" class="cat-btn px-4 py-2 rounded-full text-xs font-semibold uppercase transition-all bg-charcoal-800 text-gray-300 hover:text-gold-400 border border-gray-800 whitespace-nowrap" data-cat="watches">Timepieces ⌚</button>
+      <button onclick="filterProducts('fragrances')" class="cat-btn px-4 py-2 rounded-full text-xs font-semibold uppercase transition-all bg-charcoal-800 text-gray-300 hover:text-gold-400 border border-gray-800 whitespace-nowrap" data-cat="fragrances">Fragrances 👑</button>
+      <button onclick="filterProducts('eyewear')" class="cat-btn px-4 py-2 rounded-full text-xs font-semibold uppercase transition-all bg-charcoal-800 text-gray-300 hover:text-gold-400 border border-gray-800 whitespace-nowrap" data-cat="eyewear">Eyewear 🕶️</button>
+      <button onclick="filterProducts('accessories')" class="cat-btn px-4 py-2 rounded-full text-xs font-semibold uppercase transition-all bg-charcoal-800 text-gray-300 hover:text-gold-400 border border-gray-800 whitespace-nowrap" data-cat="accessories">Accessories ✨</button>
+    </div>
+
+    <!-- RESPONSIVE GRID -->
+    <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <p style="text-align: center; grid-column: 1/-1; color: #a0a0a0;">جاري تحميل المنتجات السحابية...</p>
+    </div>
+  </section>
+
+  <!-- INSTAGRAM FEED -->
+  <section id="instagram-feed" class="py-16 bg-charcoal-900/60 border-t border-gold-500/10 w-full">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center space-y-2 mb-8">
+        <span class="text-xs font-semibold tracking-widest text-gold-400 uppercase flex items-center justify-center gap-2">
+          <i class="fa-brands fa-instagram text-base"></i> Direct From Instagram
+        </span>
+        <h2 class="font-serif text-xl sm:text-3xl font-bold text-white">Latest Additions & Posts (@alasli_eg1)</h2>
+      </div>
+      <div class="rounded-2xl overflow-hidden glass-card p-2 sm:p-4 border border-gold-500/20">
+        <div class="elfsight-app-264d8c30-0af6-4844-8fc1-5ecba7c49bb1" data-elfsight-app-lazy></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT SECTION -->
+  <section id="about" class="bg-charcoal-900 border-t border-b border-gold-500/10 py-16 w-full">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-8 items-center">
+      <div class="space-y-4">
+        <span class="text-xs font-semibold tracking-widest text-gold-400 uppercase">About El Asli</span>
+        <h2 class="font-serif text-2xl sm:text-3xl font-bold text-white">Uncompromising Quality & Authenticity</h2>
+        <p class="text-gray-400 text-xs sm:text-sm leading-relaxed font-light">
+          At **El Asli (الأصلي)**, we represent the pinnacle of luxury craftsmanship in Egypt. Each piece in our catalog is hand-selected and delivered with precision.
+        </p>
+      </div>
+      <div class="relative">
+        <div class="aspect-4/3 rounded-2xl glass-card overflow-hidden p-3 relative">
+          <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=1200&auto=format&fit=crop" alt="Luxury" class="w-full h-full object-cover rounded-xl grayscale hover:grayscale-0 transition-all duration-700">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="contact" class="bg-charcoal-950 text-gray-400 py-12 border-t border-gold-500/10 w-full">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
+      <div class="flex items-center justify-center gap-2">
+        <span class="font-serif text-xl font-bold text-gold-gradient uppercase tracking-widest">EL ASLI</span>
+        <span class="font-arabic text-sm text-gold-400">الأصلي</span>
+      </div>
+      <p id="copyright-text" onclick="promptAdminLogin()" class="cursor-pointer hover:text-gold-400 text-xs text-gray-500 select-none">
+        © 2026 EL ASLI (الأصلي) Luxury Stores. All rights reserved. <span class="text-gold-500/70 ml-1 font-mono">(Admin Panel)</span>
+      </p>
+    </div>
+  </footer>
+
+  <!-- CART DRAWER -->
+  <div id="cart-drawer" class="fixed inset-0 z-50 pointer-events-none transition-opacity duration-300 opacity-0">
+    <div id="cart-drawer-overlay" class="absolute inset-0 bg-black/80 backdrop-blur-md"></div>
+    <div id="cart-drawer-content" class="absolute top-0 right-0 h-full w-full max-w-md bg-charcoal-900 border-l border-gold-500/20 shadow-2xl p-6 flex flex-col justify-between transform translate-x-full transition-transform duration-300 ease-in-out pointer-events-auto">
+      <div class="flex items-center justify-between pb-4 border-b border-gray-800">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-bag-shopping text-gold-500 text-lg"></i>
+          <h3 class="font-serif text-lg font-bold text-white">Your Shopping Bag</h3>
+        </div>
+        <button id="close-cart-btn" class="p-2 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+      </div>
+      <div id="cart-items-container" class="flex-grow overflow-y-auto py-4 space-y-4"></div>
+      <div class="pt-4 border-t border-gray-800 space-y-3">
+        <div class="flex justify-between text-sm font-bold text-white">
+          <span>Total:</span>
+          <span id="cart-total" class="text-gold-400">0 EGP</span>
+        </div>
+        <button id="checkout-btn" onclick="openCheckoutModal()" class="w-full py-3 bg-gold-gradient text-charcoal-950 font-bold text-xs uppercase rounded-lg">Checkout 🇪🇬</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK VIEW MODAL -->
+  <div id="quickview-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div id="quickview-overlay" class="absolute inset-0 bg-black/85 backdrop-blur-md"></div>
+    <div class="relative bg-charcoal-900 border border-gold-500/30 rounded-2xl max-w-lg w-full p-6 shadow-2xl z-10 scale-95 transition-transform duration-300 transform" id="quickview-card">
+      <button onclick="closeQuickView()" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-white bg-black/40 rounded-full z-20"><i class="fa-solid fa-xmark"></i></button>
+      <div class="grid sm:grid-cols-2 gap-4 items-center" id="quickview-content"></div>
+    </div>
+  </div>
+
+  <!-- SEARCH MODAL -->
+  <div id="search-modal" class="fixed inset-0 z-50 flex items-start justify-center pt-20 p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div id="search-overlay" class="absolute inset-0 bg-black/85 backdrop-blur-md"></div>
+    <div class="relative bg-charcoal-900 border border-gold-500/30 rounded-2xl max-w-lg w-full p-5 shadow-2xl z-10 space-y-3">
+      <div class="flex items-center justify-between pb-2 border-b border-gray-800">
+        <span class="text-xs uppercase font-bold text-gold-400">Search Store</span>
+        <button id="close-search-btn" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <input type="text" id="search-input" onkeyup="handleSearch()" placeholder="Search..." class="w-full bg-charcoal-950 border border-gray-800 rounded-lg p-2.5 text-xs text-white focus:outline-none">
+      <div id="search-results" class="max-h-60 overflow-y-auto space-y-2 text-xs"></div>
+    </div>
+  </div>
+
+  <!-- CHECKOUT MODAL -->
+  <div id="checkout-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div onclick="closeCheckoutModal()" class="absolute inset-0 bg-black/85 backdrop-blur-md"></div>
+    <div class="relative bg-charcoal-900 border border-gold-500/30 rounded-2xl max-w-md w-full p-6 shadow-2xl z-10">
+      <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      <form onsubmit="processOrder(event)" class="space-y-3 text-xs">
+        <h3 class="font-serif text-lg font-bold text-white mb-2">Express Checkout (إرسال للواتساب)</h3>
+        <input type="text" id="order-name" required placeholder="Full Name (الاسم الكامل)" class="w-full bg-charcoal-950 border border-gray-800 rounded p-2.5 text-white">
+        <input type="tel" id="order-phone" required placeholder="Phone Number (رقم الهاتف)" class="w-full bg-charcoal-950 border border-gray-800 rounded p-2.5 text-white">
+        <textarea id="order-address" required rows="2" placeholder="Address (العنوان بالتفصيل)..." class="w-full bg-charcoal-950 border border-gray-800 rounded p-2.5 text-white"></textarea>
+        <button type="submit" class="w-full py-3 bg-gold-gradient text-charcoal-950 font-bold uppercase rounded flex items-center justify-center gap-2">
+          <i class="fa-brands fa-whatsapp text-base"></i> تأكيد وإرسال الأوردر للواتساب 🇪🇬
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADMIN AUTH MODAL -->
+  <div id="admin-auth-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div onclick="closeAdminAuthModal()" class="absolute inset-0 bg-black/85 backdrop-blur-md"></div>
+    <div class="relative bg-charcoal-900 border border-gold-500/40 rounded-2xl max-w-xs w-full p-5 shadow-2xl z-10 space-y-4">
+      <h3 class="font-serif text-sm font-bold text-white text-gold-400">Admin Passcode</h3>
+      <form onsubmit="handleAdminLogin(event)" class="space-y-3 text-xs">
+        <input type="password" id="admin-password-input" required placeholder="Enter password" class="w-full bg-charcoal-950 border border-gray-800 rounded p-2.5 text-white focus:border-gold-500 focus:outline-none">
+        <button type="submit" class="w-full py-2.5 bg-gold-gradient text-charcoal-950 font-bold uppercase rounded">Access</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADMIN DASHBOARD -->
+  <div id="admin-dashboard-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="absolute inset-0 bg-black/90 backdrop-blur-md"></div>
+    <div class="relative bg-charcoal-900 border border-gold-500/40 rounded-2xl max-w-4xl w-full p-5 shadow-2xl z-10 max-h-[95vh] flex flex-col">
+      <div class="flex items-center justify-between pb-3 border-b border-gray-800 shrink-0">
+        <div class="flex items-center gap-3">
+          <h2 class="font-serif text-lg font-bold text-white">Admin Dashboard (سحابي مباشر)</h2>
+          <button onclick="openProductForm()" class="px-3 py-1.5 bg-gold-gradient text-charcoal-950 font-bold text-xs uppercase rounded flex items-center gap-1.5">
+            <i class="fa-solid fa-plus"></i> إضافة منتج جديد
+          </button>
+        </div>
+        <button onclick="closeAdminDashboard()" class="p-2 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+      </div>
+      <div class="flex-grow overflow-y-auto py-3 space-y-3">
+        <table class="w-full text-left text-xs text-gray-300">
+          <thead class="bg-charcoal-950 text-gold-400 uppercase">
+            <tr>
+              <th class="p-2">Image</th><th class="p-2">Name</th><th class="p-2">Price / Old Price</th><th class="p-2">Category</th><th class="p-2 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="admin-product-table-body" class="divide-y divide-gray-800"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD/EDIT PRODUCT MODAL -->
+  <div id="product-form-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="absolute inset-0 bg-black/90 backdrop-blur-md"></div>
+    <div class="relative bg-charcoal-900 border border-gold-500/40 rounded-2xl max-w-md w-full p-6 shadow-2xl z-10 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-gray-800 mb-4">
+        <h3 id="form-modal-title" class="font-serif text-base font-bold text-gold-400">إضافة منتج جديد</h3>
+        <button onclick="closeProductForm()" class="p-2 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="saveProduct(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="edit-product-id">
         <div>
-            <button onclick="openAdminLogin()" style="background:transparent; border:1px solid var(--gold); color:var(--gold); padding:0.5rem 1rem; border-radius:5px; cursor:pointer;">لوحة التحكم</button>
+          <label class="block text-gray-400 mb-1">اسم المنتج</label>
+          <input type="text" id="p-name" required class="w-full bg-charcoal-950 border border-gray-800 rounded p-2 text-white">
         </div>
-    </header>
-
-    <div class="container">
-        <div class="hero">
-            <h1>المجموعة الفاخرة</h1>
-            <p>تشكيلة حصرية من الساعات، العطور، والاكسسوارات المصممة خصيصاً للرجل العصري</p>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-gray-400 mb-1">السعر (EGP)</label>
+            <input type="number" id="p-price" required class="w-full bg-charcoal-950 border border-gray-800 rounded p-2 text-white">
+          </div>
+          <div>
+            <label class="block text-gray-400 mb-1">السعر القديم (للخصومات)</label>
+            <input type="number" id="p-old-price" class="w-full bg-charcoal-950 border border-gray-800 rounded p-2 text-white" placeholder="اختياري">
+          </div>
         </div>
-
-        <div id="products-grid" class="products-grid">
-            <!-- المنتجات هتتحمل سحابياً هنا فوراً -->
-            <p style="text-align: center; grid-column: 1/-1; color: var(--text-muted);">جاري تحميل المنتجات السحابية...</p>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-gray-400 mb-1">القسم</label>
+            <select id="p-category" class="w-full bg-charcoal-950 border border-gray-800 rounded p-2 text-white">
+              <option value="watches">Timepieces ⌚</option>
+              <option value="fragrances">Fragrances 👑</option>
+              <option value="eyewear">Eyewear 🕶️</option>
+              <option value="accessories">Accessories ✨</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-gray-400 mb-1">العلامة التجارية / الماركة</label>
+            <input type="text" id="p-brand" value="EL ASLI" class="w-full bg-charcoal-950 border border-gray-800 rounded p-2 text-white">
+          </div>
         </div>
+        <div>
+          <label class="block text-gray-400 mb-1">رابط الصورة (Image URL)</label>
+          <input type="url" id="p-image" required class="w-full bg-charcoal-950 border border-gray-800 rounded p-2 text-white" placeholder="https://...">
+        </div>
+        <div>
+          <label class="block text-gray-400 mb-1">وسم الخصم / التوب (Tag)</label>
+          <input type="text" id="p-tag" value="Exclusive" class="w-full bg-charcoal-950 border border-gray-800 rounded p-2 text-white">
+        </div>
+        <button type="submit" class="w-full py-3 bg-gold-gradient text-charcoal-950 font-bold uppercase rounded mt-2">حفظ ورفع للسيرفر</button>
+      </form>
     </div>
+  </div>
 
-    <!-- نافذة لوحة التحكم -->
-    <div id="admin-modal">
-        <div class="modal-content">
-            <div id="login-section">
-                <h2>تسجيل دخول المشرف</h2>
-                <div class="form-group">
-                    <label>كلمة المرور الإدارية</label>
-                    <input type="password" id="admin-pass" placeholder="أدخل كلمة المرور">
-                </div>
-                <button class="btn-primary" onclick="verifyAdmin()">دخول</button>
-                <button onclick="closeAdmin()" style="background:transparent; border:none; color:var(--text-muted); width:100%; margin-top:1rem; cursor:pointer;">إغلاق</button>
+  <div id="toast" class="fixed bottom-6 right-6 z-50 bg-charcoal-900 border border-gold-500/40 text-gold-300 text-xs px-4 py-2.5 rounded-xl shadow-2xl transition-all transform translate-y-12 opacity-0 pointer-events-none">
+    <span id="toast-msg">Action completed</span>
+  </div>
+
+  <!-- JAVASCRIPT & SUPABASE INTEGRATION -->
+  <script>
+    // إعدادات Supabase السحابية
+    const SUPABASE_URL = 'https://oujjgppajsvrflqapwm.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_L9o6bHpUQzrkJHFnmhwtNg_pOVHcp7J';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let products = [], cart = [], currentCategoryFilter = 'all';
+
+    window.addEventListener('DOMContentLoaded', () => {
+      fetchProductsFromSupabase();
+    });
+
+    // جلب المنتجات من قاعدة البيانات السحابية
+    async function fetchProductsFromSupabase() {
+      const grid = document.getElementById('product-grid');
+      const { data, error } = await supabaseClient.from('products').select('*').order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('خطأ في جلب البيانات:', error);
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-red-400 text-xs">تعذر الاتصال بالسيرفر السحابي حالياً.</div>`;
+        return;
+      }
+
+      products = data || [];
+      renderProducts(currentCategoryFilter === 'all' ? products : products.filter(p => p.category === currentCategoryFilter));
+    }
+
+    function renderProducts(items) {
+      const grid = document.getElementById('product-grid');
+      grid.innerHTML = '';
+      if (!items.length) {
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-gray-500 text-xs">لا توجد منتجات مضافة في هذا القسم حالياً.</div>`;
+        return;
+      }
+      items.forEach(p => {
+        const card = document.createElement('div');
+        card.className = "group glass-card rounded-2xl overflow-hidden hover:border-gold-500/50 transition-all duration-300 flex flex-col justify-between max-w-full mx-auto w-full";
+        
+        let priceHtml = `<span class="text-sm font-bold text-gold-400">${Number(p.price).toLocaleString()} EGP</span>`;
+        if (p.oldPrice && Number(p.oldPrice) > Number(p.price)) {
+          priceHtml = `
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-bold text-gold-400">${Number(p.price).toLocaleString()} EGP</span>
+              <span class="text-xs text-gray-500 line-through">${Number(p.oldPrice).toLocaleString()} EGP</span>
             </div>
+          `;
+        }
 
-            <div id="dashboard-section" style="display: none;">
-                <h2>إدارة المنتجات (سحابي مباشر)</h2>
-                <form id="product-form" onsubmit="addProduct(event)">
-                    <div class="form-group">
-                        <label>اسم المنتج</label>
-                        <input type="text" id="p-name" required>
-                    </div>
-                    <div class="form-group">
-                        <label>السعر (جنيه)</label>
-                        <input type="number" id="p-price" required>
-                    </div>
-                    <div class="form-group">
-                        <label>السعر القديم (اختياري للشطب)</label>
-                        <input type="number" id="p-old">
-                    </div>
-                    <div class="form-group">
-                        <label>القسم</label>
-                        <input type="text" id="p-category" placeholder="ساعات، عطور، اكسسوارات" required>
-                    </div>
-                    <div class="form-group">
-                        <label>الماركة / Brand</label>
-                        <input type="text" id="p-brand" required>
-                    </div>
-                    <div class="form-group">
-                        <label>رابط الصورة</label>
-                        <input type="url" id="p-image" placeholder="https://..." required>
-                    </div>
-                    <div class="form-group">
-                        <label>الوسم (Tag)</label>
-                        <input type="text" id="p-tag" placeholder="Exclusive / Bestseller">
-                    </div>
-                    <button type="submit" class="btn-primary">إضافة المنتج للموقع</button>
-                </form>
-
-                <div class="admin-list">
-                    <h3 style="color:var(--gold); margin-bottom:1rem; font-size:1rem;">المنتجات الحالية على السيرفر:</h3>
-                    <div id="admin-products-list" style="max-height: 200px; overflow-y: auto;"></div>
-                </div>
-                <button onclick="closeAdmin()" class="btn-primary" style="background:#333; color:#fff; margin-top:1.5rem;">خروج من لوحة التحكم</button>
+        card.innerHTML = `
+          <div>
+            <div class="relative w-full h-64 bg-charcoal-900/90 p-4 flex items-center justify-center overflow-hidden cursor-pointer" onclick="openQuickView(${p.id})">
+              <img src="${p.image}" alt="${p.name}" class="max-h-full max-w-full object-contain object-center group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/600x600/121212/D4AF37?text=EL+ASLI'">
+              ${p.tag ? `<span class="absolute top-3 left-3 bg-gold-500/90 text-charcoal-950 font-bold text-[10px] uppercase px-2.5 py-1 rounded shadow">${p.tag}</span>` : ''}
             </div>
+            <div class="p-4 space-y-1.5">
+              <span class="text-[9px] font-bold text-gold-400 uppercase tracking-widest">${p.brand || 'EL ASLI'}</span>
+              <h3 class="font-serif text-sm font-semibold text-white group-hover:text-gold-300 line-clamp-1 cursor-pointer" onclick="openQuickView(${p.id})">${p.name}</h3>
+            </div>
+          </div>
+          <div class="px-4 pb-4 pt-2 flex items-center justify-between border-t border-gray-800/60 mt-2">
+            <div>${priceHtml}</div>
+            <button onclick="addToCart(${p.id})" class="p-2.5 bg-gold-500/10 text-gold-400 hover:bg-gold-500 hover:text-charcoal-950 rounded-lg transition-colors border border-gold-500/30">
+              <i class="fa-solid fa-bag-shopping text-xs"></i>
+            </button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function filterProducts(cat) {
+      currentCategoryFilter = cat;
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        if (btn.dataset.cat === cat) {
+          btn.classList.add('bg-gold-500', 'text-charcoal-950', 'shadow-md');
+          btn.classList.remove('bg-charcoal-800', 'text-gray-300');
+        } else {
+          btn.classList.remove('bg-gold-500', 'text-charcoal-950', 'shadow-md');
+          btn.classList.add('bg-charcoal-800', 'text-gray-300');
+        }
+      });
+      renderProducts(cat === 'all' ? products : products.filter(p => p.category === cat));
+    }
+
+    const cartDrawer = document.getElementById('cart-drawer');
+    const cartContent = document.getElementById('cart-drawer-content');
+    document.getElementById('cart-btn').addEventListener('click', () => { cartDrawer.classList.remove('pointer-events-none', 'opacity-0'); cartContent.classList.remove('translate-x-full'); updateCartUI(); });
+    document.getElementById('close-cart-btn').addEventListener('click', () => { cartContent.classList.add('translate-x-full'); cartDrawer.classList.add('opacity-0', 'pointer-events-none'); });
+
+    function addToCart(id) {
+      const p = products.find(item => item.id === id);
+      const existing = cart.find(item => item.id === id);
+      if (existing) existing.qty++; else cart.push({ ...p, qty: 1 });
+      openToast(`Added to cart!`);
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      document.getElementById('cart-count').innerText = cart.reduce((s, i) => s + i.qty, 0);
+      document.getElementById('cart-count').classList.toggle('scale-0', cart.length === 0);
+      document.getElementById('cart-total').innerText = `${cart.reduce((s, i) => s + (i.price * i.qty), 0).toLocaleString()} EGP`;
+      document.getElementById('cart-items-container').innerHTML = cart.map(i => `
+        <div class="flex gap-3 p-2.5 glass-card rounded-xl items-center">
+          <img src="${i.image}" class="w-10 h-10 object-contain bg-black rounded">
+          <div class="flex-grow"><h4 class="text-xs text-white">${i.name}</h4><span class="text-[10px] text-gold-400">${i.price} EGP (x${i.qty})</span></div>
         </div>
-    </div>
+      `).join('');
+    }
 
-    <footer>
-        <p>جميع الحقوق محفوظة © 2026 <span onclick="openAdminLogin()">EL ASLI</span></p>
-    </footer>
+    function openQuickView(id) {
+      const p = products.find(item => item.id === id);
+      document.getElementById('quickview-content').innerHTML = `
+        <div class="aspect-square rounded-lg overflow-hidden bg-black flex items-center justify-center p-2">
+          <img src="${p.image}" class="max-h-full max-w-full object-contain">
+        </div>
+        <div class="space-y-3">
+          <span class="text-[9px] font-bold text-gold-400 uppercase">${p.brand || 'EL ASLI'}</span>
+          <h3 class="font-serif text-base font-bold text-white">${p.name}</h3>
+          <span class="text-base font-bold text-gold-400 block">${Number(p.price).toLocaleString()} EGP</span>
+          <button onclick="addToCart(${p.id}); closeQuickView();" class="w-full py-2.5 bg-gold-gradient text-charcoal-950 font-bold text-xs uppercase rounded">Add to Bag 🛍️</button>
+        </div>
+      `;
+      document.getElementById('quickview-modal').classList.remove('pointer-events-none', 'opacity-0');
+      document.getElementById('quickview-card').classList.remove('scale-95');
+    }
 
-    <script>
-        // إعدادات اتصال Supabase السحابي للمشروع
-        const SUPABASE_URL = 'https://oujjgppajsvrflqapwm.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_L9o6bHpUQzrkJHFnmhwtNg_pOVHcp7J';
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    function closeQuickView() {
+      document.getElementById('quickview-card').classList.add('scale-95');
+      document.getElementById('quickview-modal').classList.add('opacity-0', 'pointer-events-none');
+    }
 
-        const ADMIN_PASS = 'alasli2026';
+    const searchModal = document.getElementById('search-modal');
+    document.getElementById('search-btn').addEventListener('click', () => { searchModal.classList.remove('pointer-events-none', 'opacity-0'); document.getElementById('search-input').focus(); });
+    document.getElementById('close-search-btn').addEventListener('click', () => searchModal.classList.add('opacity-0', 'pointer-events-none'));
 
-        // تحميل المنتجات فور فتح الصفحة للجميع
-        window.addEventListener('DOMContentLoaded', () => {
-            fetchProducts();
-        });
+    function handleSearch() {
+      const q = document.getElementById('search-input').value.toLowerCase().trim();
+      const res = document.getElementById('search-results');
+      if (!q) { res.innerHTML = ''; return; }
+      const matches = products.filter(p => p.name.toLowerCase().includes(q) || (p.brand && p.brand.toLowerCase().includes(q)));
+      res.innerHTML = matches.map(p => `
+        <div onclick="openQuickView(${p.id}); searchModal.classList.add('opacity-0', 'pointer-events-none');" class="flex items-center gap-2 p-2 hover:bg-white/5 rounded cursor-pointer">
+          <img src="${p.image}" class="w-8 h-8 object-contain bg-black rounded">
+          <div><h5 class="text-xs text-white">${p.name}</h5><span class="text-[10px] text-gold-400">${p.price} EGP</span></div>
+        </div>
+      `).join('');
+    }
 
-        async function fetchProducts() {
-            const grid = document.getElementById('products-grid');
-            const { data: products, error } = await supabaseClient.from('products').select('*').order('created_at', { ascending: false });
+    function openCheckoutModal() { 
+      if (cart.length === 0) return; 
+      document.getElementById('cart-drawer-content').classList.add('translate-x-full'); 
+      document.getElementById('cart-drawer').classList.add('opacity-0', 'pointer-events-none'); 
+      document.getElementById('checkout-modal').classList.remove('pointer-events-none', 'opacity-0'); 
+    }
+    
+    function closeCheckoutModal() { 
+      document.getElementById('checkout-modal').classList.add('opacity-0', 'pointer-events-none'); 
+    }
 
-            if (error) {
-                console.error('خطأ في جلب البيانات:', error);
-                grid.innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: #ff4d4d;">تعذر الاتصال بالسيرفر السحابي حالياً.</p>';
-                return;
-            }
+    function processOrder(e) {
+      e.preventDefault();
+      const name = document.getElementById('order-name').value;
+      const phone = document.getElementById('order-phone').value;
+      const address = document.getElementById('order-address').value;
 
-            if (!products || products.length === 0) {
-                grid.innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: var(--text-muted);">لا توجد منتجات مضافة حالياً في المتجر.</p>';
-                return;
-            }
+      if (cart.length === 0) return;
 
-            grid.innerHTML = products.map(p => `
-                <div class="product-card">
-                    ${p.tag ? `<div class="product-tag">${p.tag}</div>` : ''}
-                    <img src="${p.image}" alt="${p.name}" class="product-img" onerror="this.src='https://via.placeholder.com/300x250?text=EL+ASLI'">
-                    <div class="product-info">
-                        <div class="product-brand">${p.brand || 'EL ASLI'}</div>
-                        <div class="product-title">${p.name}</div>
-                        <div class="product-pricing">
-                            <span class="current-price">${p.price} ج.م</span>
-                            ${p.oldPrice ? `<span class="old-price">${p.oldPrice} ج.م</span>` : ''}
-                        </div>
-                        <button class="btn-buy" onclick="alert('تم إضافتك لطلب المنتج: ${p.name}')">اطلب الان</button>
-                    </div>
-                </div>
-            `).join('');
+      let orderText = `🛒 *طلب جديد من متجر الأصلي (EL ASLI)*\n\n`;
+      orderText += `👤 *الاسم:* ${name}\n`;
+      orderText += `📞 *رقم الهاتف:* ${phone}\n`;
+      orderText += `📍 *العنوان:* ${address}\n\n`;
+      orderText += `🛍️ *المنتجات المطلوبة:*\n`;
 
-            renderAdminList(products);
-        }
+      let total = 0;
+      cart.forEach((item, index) => {
+        let itemTotal = item.price * item.qty;
+        total += itemTotal;
+        orderText += `${index + 1}. ${item.name} (×${item.qty}) - ${itemTotal.toLocaleString()} EGP\n`;
+      });
 
-        function openAdminLogin() {
-            document.getElementById('admin-modal').style.display = 'flex';
-            document.getElementById('login-section').style.display = 'block';
-            document.getElementById('dashboard-section').style.display = 'none';
-            document.getElementById('admin-pass').value = '';
-        }
+      orderText += `\n💰 *الإجمالي الكلي:* ${total.toLocaleString()} EGP`;
 
-        function closeAdmin() {
-            document.getElementById('admin-modal').style.display = 'none';
-        }
+      const adminWhatsApp = "201097423486"; 
+      const encodedMessage = encodeURIComponent(orderText);
+      const whatsappURL = `https://wa.me/${adminWhatsApp}?text=${encodedMessage}`;
 
-        function verifyAdmin() {
-            const pass = document.getElementById('admin-pass').value;
-            if (pass === ADMIN_PASS) {
-                document.getElementById('login-section').style.display = 'none';
-                document.getElementById('dashboard-section').style.display = 'block';
-                loadAdminProducts();
-            } else {
-                alert('كلمة المرور غير صحيحة!');
-            }
-        }
+      closeCheckoutModal();
+      cart = [];
+      updateCartUI();
+      
+      window.open(whatsappURL, '_blank');
+      openToast('🎉 تم تجهيز الأوردر وتحويلك للواتساب!');
+    }
 
-        async function loadAdminProducts() {
-            const { data: products } = await supabaseClient.from('products').select('*').order('created_at', { ascending: false });
-            renderAdminList(products || []);
-        }
+    function promptAdminLogin() { document.getElementById('admin-auth-modal').classList.remove('pointer-events-none', 'opacity-0'); document.getElementById('admin-password-input').value = ''; document.getElementById('admin-password-input').focus(); }
+    function closeAdminAuthModal() { document.getElementById('admin-auth-modal').classList.add('opacity-0', 'pointer-events-none'); }
+    
+    function handleAdminLogin(e) {
+      e.preventDefault();
+      if (document.getElementById('admin-password-input').value === 'alasli2026') {
+        closeAdminAuthModal();
+        document.getElementById('admin-dashboard-modal').classList.remove('pointer-events-none', 'opacity-0');
+        renderAdminTable();
+        openToast('Welcome Admin!');
+      } else { openToast('❌ Wrong password!'); }
+    }
+    
+    function closeAdminDashboard() { document.getElementById('admin-dashboard-modal').classList.add('opacity-0', 'pointer-events-none'); }
+    
+    function renderAdminTable() {
+      document.getElementById('admin-product-table-body').innerHTML = products.map(p => `
+        <tr class="border-b border-gray-800">
+          <td class="p-2"><img src="${p.image}" class="w-8 h-8 object-contain bg-black rounded"></td>
+          <td class="p-2 text-white">${p.name}</td>
+          <td class="p-2 text-gold-400">${p.price} EGP ${p.oldPrice ? `<span class="text-gray-500 line-through text-[10px]">(${p.oldPrice})</span>` : ''}</td>
+          <td class="p-2 text-gray-400 capitalize">${p.category}</td>
+          <td class="p-2 text-center space-x-2">
+            <button onclick="deleteProductFromSupabase(${p.id})" class="text-red-400 hover:text-red-500" title="حذف"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        </tr>
+      `).join('');
+    }
 
-        function renderAdminList(products) {
-            const listContainer = document.getElementById('admin-products-list');
-            if (!products || products.length === 0) {
-                listContainer.innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem;">لا توجد منتجات مسجلة.</p>';
-                return;
-            }
-            listContainer.innerHTML = products.map(p => `
-                <div class="admin-item">
-                    <span>${p.name} - ${p.price} ج.م</span>
-                    <button class="btn-delete" onclick="deleteProduct(${p.id})">حذف</button>
-                </div>
-            `).join('');
-        }
+    function openProductForm() {
+      document.getElementById('p-name').value = '';
+      document.getElementById('p-price').value = '';
+      document.getElementById('p-old-price').value = '';
+      document.getElementById('p-category').value = 'watches';
+      document.getElementById('p-brand').value = 'EL ASLI';
+      document.getElementById('p-image').value = '';
+      document.getElementById('p-tag').value = 'Exclusive';
+      document.getElementById('product-form-modal').classList.remove('pointer-events-none', 'opacity-0');
+    }
 
-        async function addProduct(e) {
-            e.preventDefault();
-            const newProduct = {
-                name: document.getElementById('p-name').value,
-                price: parseFloat(document.getElementById('p-price').value),
-                oldPrice: document.getElementById('p-old').value ? parseFloat(document.getElementById('p-old').value) : null,
-                category: document.getElementById('p-category').value,
-                brand: document.getElementById('p-brand').value,
-                image: document.getElementById('p-image').value,
-                tag: document.getElementById('p-tag').value
-            };
+    function closeProductForm() {
+      document.getElementById('product-form-modal').classList.add('opacity-0', 'pointer-events-none');
+    }
 
-            const { error } = await supabaseClient.from('products').insert([newProduct]);
+    // إضافة منتج جديد للسيرفر السحابي مباشرة
+    async function saveProduct(e) {
+      e.preventDefault();
+      const newProduct = {
+        name: document.getElementById('p-name').value,
+        price: parseFloat(document.getElementById('p-price').value),
+        oldPrice: document.getElementById('p-old-price').value ? parseFloat(document.getElementById('p-old-price').value) : null,
+        category: document.getElementById('p-category').value,
+        brand: document.getElementById('p-brand').value,
+        image: document.getElementById('p-image').value,
+        tag: document.getElementById('p-tag').value
+      };
 
-            if (error) {
-                alert('حدث خطأ أثناء الإضافة: ' + error.message);
-            } else {
-                alert('تم إضافة المنتج بنجاح ورفعه للسيرفر!');
-                document.getElementById('product-form').reset();
-                fetchProducts();
-                loadAdminProducts();
-            }
-        }
+      const { error } = await supabaseClient.from('products').insert([newProduct]);
 
-        async function deleteProduct(id) {
-            if (confirm('هل أنت متأكد من حذف هذا المنتج نهائياً من المتجر؟')) {
-                const { error } = await supabaseClient.from('products').delete().eq('id', id);
-                if (error) {
-                    alert('خطأ في الحذف: ' + error.message);
-                } else {
-                    fetchProducts();
-                    loadAdminProducts();
-                }
-            }
-        }
-    </script>
+      if (error) {
+        openToast('❌ حدث خطأ أثناء الحفظ بالسيرفر');
+        console.error(error);
+      } else {
+        openToast('✨ تم رفع المنتج للسيرفر بنجاح');
+        closeProductForm();
+        fetchProductsFromSupabase();
+        renderAdminTable();
+      }
+    }
+
+    // حذف منتج من السيرفر السحابي
+    async function deleteProductFromSupabase(id) {
+      if (!confirm('هل أنت متأكد من حذف هذا المنتج نهائياً؟')) return;
+      
+      const { error } = await supabaseClient.from('products').delete().eq('id', id);
+
+      if (error) {
+        openToast('❌ خطأ في الحذف');
+      } else {
+        openToast('🗑️ تم الحذف بنجاح');
+        fetchProductsFromSupabase();
+        renderAdminTable();
+      }
+    }
+
+    function openToast(msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toast-msg').innerText = msg;
+      t.classList.remove('translate-y-12', 'opacity-0', 'pointer-events-none');
+      setTimeout(() => t.classList.add('translate-y-12', 'opacity-0', 'pointer-events-none'), 3000);
+    }
+
+    const navDrawer = document.getElementById('nav-drawer'), navContent = document.getElementById('nav-drawer-content');
+    document.getElementById('menu-toggle-btn').addEventListener('click', () => { navDrawer.classList.remove('pointer-events-none', 'opacity-0'); navContent.classList.remove('-translate-x-full'); });
+    document.getElementById('close-nav-btn').addEventListener('click', closeNavDrawer);
+    document.getElementById('nav-drawer-overlay').addEventListener('click', closeNavDrawer);
+    function closeNavDrawer() { navContent.classList.add('-translate-x-full'); navDrawer.classList.add('opacity-0', 'pointer-events-none'); }
+  </script>
 </body>
 </html>
