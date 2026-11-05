@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>متجر الأصلي - EL ASLI</title>
-    <!-- مكتبة Supabase للربط بقاعدة البيانات -->
+    <title>متجر الأصلي | EL ASLI - مجموعة فاخرة</title>
+    <!-- Supabase JS Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: 'Cairo', sans-serif; background-color: #0b0b0b; color: #f3f4f6; }
         .gold-text { color: #d4af37; }
@@ -18,52 +19,52 @@
 </head>
 <body class="bg-[#0b0b0b] text-gray-100 min-h-screen flex flex-col justify-between">
 
-    <!-- الهيدر -->
-    <header class="border-b border-zinc-800 p-4 text-center">
+    <!-- الهيدر وتصميم المتجر الفاخر -->
+    <header class="border-b border-zinc-800 p-4 text-center bg-zinc-950/80 sticky top-0 z-40 backdrop-blur">
         <h1 class="text-3xl font-bold gold-text">EL ASLI</h1>
         <p class="text-xs text-gray-400 mt-1">متجر الأصلي - الفخامة بلا منازع</p>
     </header>
 
-    <!-- المحتوى الرئيسي -->
+    <!-- المحتوى الرئيسي للمتجر -->
     <main class="container mx-auto px-4 py-8 flex-grow">
         <div class="text-center mb-10">
-            <h2 class="text-2xl font-semibold mb-2">أحدث المنتجات</h2>
-            <p class="text-gray-400 text-sm">تصفح تشكيلتنا الحصرية من المنتجات الفاخرة</p>
+            <h2 class="text-2xl font-semibold mb-2 gold-text">أحدث المنتجات</h2>
+            <p class="text-gray-400 text-sm">تصفح تشكيلتنا الحصرية من الساعات، الإكسسوارات والعطور الفاخرة</p>
         </div>
 
-        <!-- شبكة المنتجات -->
+        <!-- شبكة عرض المنتجات -->
         <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            <!-- سيتم تحميل المنتجات هنا ديناميكياً -->
+            <!-- المنتجات بتظهر هنا أوتوماتيك من القاعدة -->
         </div>
     </main>
 
-    <!-- الفوتر (مكان فتح لوحة التحكم) -->
-    <footer class="border-t border-zinc-800 py-6 text-center text-sm text-gray-500">
-        <p id="admin-trigger" class="cursor-pointer hover:text-white transition">جميع الحقوق محفوظة © 2026 - متجر الأصلي</p>
+    <!-- الفوتر (مكان فتح لوحة التحكم بالضغط على الحقوق) -->
+    <footer class="border-t border-zinc-800 py-6 text-center text-sm text-zinc-500 bg-zinc-950">
+        <p id="admin-trigger" class="cursor-pointer hover:text-gold-text transition inline-block">جميع الحقوق محفوظة © 2026 - متجر الأصلي</p>
     </footer>
 
-    <!-- نافذة لوحة التحكم (مخفية افتراضياً) -->
-    <div id="admin-modal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-zinc-900 border gold-border rounded-xl w-full max-w-2xl p-6 relative max-h-[90vh] overflow-y-auto">
-            <button id="close-modal" class="absolute top-4 left-4 text-gray-400 hover:text-white text-xl">✕</button>
-            <h3 class="text-xl font-bold gold-text mb-4 text-center">لوحة تحكم المسؤول</h3>
+    <!-- نافذة لوحة التحكم المخفية -->
+    <div id="admin-modal" class="fixed inset-0 bg-black/85 hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-zinc-900 border gold-border rounded-xl w-full max-w-2xl p-6 relative max-h-[90vh] overflow-y-auto shadow-2xl">
+            <button id="close-modal" class="absolute top-4 left-4 text-gray-400 hover:text-white text-xl font-bold">✕</button>
+            <h3 class="text-xl font-bold gold-text mb-6 text-center">لوحة تحكم المسؤول</h3>
 
             <!-- نموذج إضافة منتج جديد -->
-            <form id="add-product-form" class="space-y-4 mb-8 bg-zinc-800/50 p-4 rounded-lg border border-zinc-700">
+            <form id="add-product-form" class="space-y-4 mb-8 bg-zinc-950 p-4 rounded-lg border border-zinc-800">
                 <h4 class="text-sm font-semibold gold-text">إضافة منتج جديد</h4>
                 <div>
                     <label class="block text-xs text-gray-300 mb-1">اسم المنتج</label>
                     <input type="text" id="p-name" required class="w-full bg-zinc-900 border border-zinc-700 rounded p-2 text-sm text-white focus:outline-none focus:border-[#d4af37]">
                 </div>
                 <div>
-                    <label class="block text-xs text-gray-300 mb-1">السعر</label>
+                    <label class="block text-xs text-gray-300 mb-1">السعر (جنيه)</label>
                     <input type="number" id="p-price" required class="w-full bg-zinc-900 border border-zinc-700 rounded p-2 text-sm text-white focus:outline-none focus:border-[#d4af37]">
                 </div>
                 <div>
                     <label class="block text-xs text-gray-300 mb-1">رابط الصورة (URL)</label>
                     <input type="url" id="p-image" required class="w-full bg-zinc-900 border border-zinc-700 rounded p-2 text-sm text-white focus:outline-none focus:border-[#d4af37]">
                 </div>
-                <button type="submit" class="w-full gold-bg text-black font-bold py-2 rounded transition">إضافة المنتج للمتجر</button>
+                <button type="submit" class="w-full gold-bg text-black font-bold py-2 rounded transition cursor-pointer">إضافة المنتج للمتجر</button>
             </form>
 
             <!-- جدول إدارة المنتجات -->
@@ -71,7 +72,7 @@
             <div class="overflow-x-auto">
                 <table class="w-full text-right text-sm">
                     <thead>
-                        <tr class="border-b border-zinc-700 text-gray-400">
+                        <tr class="border-b border-zinc-800 text-gray-400">
                             <th class="p-2">صورة</th>
                             <th class="p-2">اسم</th>
                             <th class="p-2">سعر</th>
@@ -79,18 +80,17 @@
                         </tr>
                     </thead>
                     <tbody id="admin-products-list">
-                        <!-- المنتجات تظهر هنا -->
+                        <!-- جدول الإدارة يظهر هنا -->
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <!-- سكربت التشغيل وقاعدة البيانات -->
+    <!-- السكربت البرمجي للتحكم -->
     <script>
         const ADMIN_PASSWORD = 'alasli2026';
 
-        // فتح لوحة التحكم عند الضغط على الحقوق محفوظة
         const trigger = document.getElementById('admin-trigger');
         const modal = document.getElementById('admin-modal');
         const closeModal = document.getElementById('close-modal');
