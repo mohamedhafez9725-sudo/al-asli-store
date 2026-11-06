@@ -407,7 +407,7 @@
           <label class="block text-gray-400 mb-1">وسم الخصم / التوب (Tag)</label>
           <input type="text" id="p-tag" value="Exclusive" class="w-full bg-charcoal-950 border border-gray-800 rounded p-2 text-white">
         </div>
-        <button type="submit" class="w-full py-3 bg-gold-gradient text-charcoal-950 font-bold uppercase rounded mt-2">حفظ المنتج</button>
+        <button type="submit" class="w-full py-3 bg-gold-gradient text-charcoal-950 font-bold uppercase rounded mt-2">حفظ المنتجချင်း</button>
       </form>
     </div>
   </div>
@@ -422,16 +422,26 @@
     const SUPABASE_ANON_KEY = 'sb_publishable_L9o6bHpUQzrkJHFnmhwtNg_pOVHcp7J';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // قائمة المنتجات (متضمنة ساعة Rolex الجديدة بالسعر والوصف المطلوب)
+    // المنتجات الافتراضية الاثنين معاً (الشوكة وساعة الروكسي)
     const defaultProducts = [
       {
-        id: 1,
+        id: 2,
         name: "🔥 New Collection For Men’s - Rolex 🤍",
         price: 365,
         oldPrice: 456,
         category: "watches",
         brand: "براند الأصلي 👑",
         image: "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/fc7ac50e-89ac-478d-900a-1cfabcb0cb6f.jpg",
+        tag: "خصم 20% 🔥"
+      },
+      {
+        id: 1,
+        name: "🔥 شوكة معدن التريند (الألوان: أبيض - أسود - كحلي)",
+        price: 288,
+        oldPrice: 360,
+        category: "watches",
+        brand: "براند الأصلي 👑",
+        image: "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/c20cbbfe-43ce-4944-9690-e960cdea794b.jpg",
         tag: "خصم 20% 🔥"
       }
     ];
@@ -449,7 +459,8 @@
         if (error || !data || data.length === 0) {
           products = defaultProducts;
         } else {
-          products = data;
+          // لو فيه داتا من قاعدة البيانات بنخليهم الاتنين ظاهرين مع بعض أو الداتا المحفوظة
+          products = data.length < 2 ? [...data, ...defaultProducts] : data;
         }
       } catch (e) {
         products = defaultProducts;
