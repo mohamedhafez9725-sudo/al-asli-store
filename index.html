@@ -422,16 +422,16 @@
     const SUPABASE_ANON_KEY = 'sb_publishable_L9o6bHpUQzrkJHFnmhwtNg_pOVHcp7J';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // منتج واحد جامع بالصورة الحقيقية والألوان المتاحة
+    // قائمة المنتجات (متضمنة ساعة Rolex الجديدة بالسعر والوصف المطلوب)
     const defaultProducts = [
       {
         id: 1,
-        name: "🔥 شوكة معدن التريند",
-        price: 288,
-        oldPrice: 360,
+        name: "🔥 New Collection For Men’s - Rolex 🤍",
+        price: 365,
+        oldPrice: 456,
         category: "watches",
         brand: "براند الأصلي 👑",
-        image: "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/c20cbbfe-43ce-4944-9690-e960cdea794b.jpg",
+        image: "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/fc7ac50e-89ac-478d-900a-1cfabcb0cb6f.jpg",
         tag: "خصم 20% 🔥"
       }
     ];
@@ -488,7 +488,7 @@
             <div class="p-4 space-y-1.5">
               <span class="text-[9px] font-bold text-gold-400 uppercase tracking-widest">${p.brand || 'EL ASLI'}</span>
               <h3 class="font-serif text-sm font-semibold text-white group-hover:text-gold-300 line-clamp-2 cursor-pointer" onclick="openQuickView(${p.id})">${p.name}</h3>
-              <p class="text-[11px] text-gray-400 mt-1">الألوان المتاحة: 🤍 أبيض - 🖤 أسود - 💙 كحلي</p>
+              <p class="text-[11px] text-gray-400 mt-1">💎 كواليتي عالي وتشطيب فاخر</p>
             </div>
           </div>
           <div class="px-4 pb-4 pt-2 flex items-center justify-between border-t border-gray-800/60 mt-2">
