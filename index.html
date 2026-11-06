@@ -422,36 +422,16 @@
     const SUPABASE_ANON_KEY = 'sb_publishable_L9o6bHpUQzrkJHFnmhwtNg_pOVHcp7J';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // قائمة المنتجات الأساسية الجاهزة بالمنتجات الجديدة
+    // منتج واحد جامع بكل الألوان المطلوبة وصورته الأساسية
     const defaultProducts = [
       {
-        id: 101,
-        name: "ساعة الأصلي شوكة معدن تريند (مينا أسود)",
+        id: 1,
+        name: "🔥 شوكة معدن التريند (الألوان: أبيض - أسود - كحلي)",
         price: 288,
         oldPrice: 360,
         category: "watches",
-        brand: "الأصلي | EL ASLI",
+        brand: "براند الأصلي 👑",
         image: "https://i.supaimg.com/f9b0e5ef-7508-4fde-b61a-default1.jpg",
-        tag: "خصم 20% 🔥"
-      },
-      {
-        id: 102,
-        name: "ساعة الأصلي شوكة معدن تريند (مينا كحلي)",
-        price: 288,
-        oldPrice: 360,
-        category: "watches",
-        brand: "الأصلي | EL ASLI",
-        image: "https://i.supaimg.com/f9b0e5ef-7508-4fde-b61a-default2.jpg",
-        tag: "خصم 20% 🔥"
-      },
-      {
-        id: 103,
-        name: "ساعة الأصلي شوكة معدن تريند (مينا أبيض)",
-        price: 288,
-        oldPrice: 360,
-        category: "watches",
-        brand: "الأصلي | EL ASLI",
-        image: "https://i.supaimg.com/f9b0e5ef-7508-4fde-b61a-default3.jpg",
         tag: "خصم 20% 🔥"
       }
     ];
@@ -507,7 +487,8 @@
             </div>
             <div class="p-4 space-y-1.5">
               <span class="text-[9px] font-bold text-gold-400 uppercase tracking-widest">${p.brand || 'EL ASLI'}</span>
-              <h3 class="font-serif text-sm font-semibold text-white group-hover:text-gold-300 line-clamp-1 cursor-pointer" onclick="openQuickView(${p.id})">${p.name}</h3>
+              <h3 class="font-serif text-sm font-semibold text-white group-hover:text-gold-300 line-clamp-2 cursor-pointer" onclick="openQuickView(${p.id})">${p.name}</h3>
+              <p class="text-[11px] text-gray-400 mt-1">الألوان المتاحة: 🤍 أبيض - 🖤 أسود - 💙 كحلي</p>
             </div>
           </div>
           <div class="px-4 pb-4 pt-2 flex items-center justify-between border-t border-gray-800/60 mt-2">
@@ -711,10 +692,6 @@
       closeProductForm();
       renderProducts(currentCategoryFilter === 'all' ? products : products.filter(p => p.category === currentCategoryFilter));
       renderAdminTable();
-
-      try {
-        await supabaseClient.from('products').insert([newProduct]);
-      } catch (err) {}
     }
 
     async function deleteProductFromSupabase(id) {
@@ -723,10 +700,6 @@
       openToast('🗑️ تم الحذف بنجاح');
       renderProducts(currentCategoryFilter === 'all' ? products : products.filter(p => p.category === currentCategoryFilter));
       renderAdminTable();
-
-      try {
-        await supabaseClient.from('products').delete().eq('id', id);
-      } catch (err) {}
     }
 
     function openToast(msg) {
