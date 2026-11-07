@@ -422,8 +422,107 @@
     const SUPABASE_ANON_KEY = 'sb_publishable_L9o6bHpUQzrkJHFnmhwtNg_pOVHcp7J';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // المنتجات السبعة الأساسية
+    // قائمة المنتجات الكلية: 12 إكسسوارات + 6 ساعات
     const defaultProducts = [
+      // ---------- إكسسوارات جيدة (7 منتجات جديدة) ----------
+      {
+        id: 18,
+        name: "✨ عرض 3 قطع + 1 قطعة هدية ❤️",
+        price: 528,
+        oldPrice: 660,
+        category: "accessories",
+        brand: "براند الأصلي 👑",
+        image: "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/523f6bf0-94f9-4981-8e8f-34e3d309a788.jpg",
+        tag: "خصم 20% 🔥"
+      },
+      {
+        id: 17,
+        name: "✨ Gold Plated 💯",
+        price: 192,
+        oldPrice: 240,
+        category: "accessories",
+        brand: "براند الأصلي 👑",
+        image: "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/693a8850-48a1-442a-be5a-487baa1bb315.jpg",
+        images: [
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/693a8850-48a1-442a-be5a-487baa1bb315.jpg",
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/de7e9718-ab6c-4501-8918-9dec33292f6b.jpg"
+        ],
+        tag: "خصم 20% 🔥"
+      },
+      {
+        id: 16,
+        name: "✨ انسيال تيوليب 🌷 (جولد بليتد)",
+        price: 125,
+        oldPrice: 156,
+        category: "accessories",
+        brand: "براند الأصلي 👑",
+        image: "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/35ed6183-0bdd-480d-89e5-c7b6c7825529.jpg",
+        images: [
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/35ed6183-0bdd-480d-89e5-c7b6c7825529.jpg",
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/211240a6-cff3-471b-9ebf-ac71ae26dd51.jpg",
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/fcf4161f-2be6-4fa8-a0ae-28d75d9af26e.jpg",
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/5303b777-c7fd-49ec-a756-8d65f22a323e.jpg",
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/fad430f1-daf5-4eae-a6c0-24c8053576da.jpg"
+        ],
+        tag: "خصم 20% 🔥"
+      },
+      {
+        id: 15,
+        name: "✨ كومبو 2 قطعة + 1 قطعة هدية (لاكوست + آية الكرسي)",
+        price: 538,
+        oldPrice: 672,
+        category: "accessories",
+        brand: "براند الأصلي 👑",
+        image: "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/cf7a8187-3cac-4f94-8aff-5c6b8cd870d7.jpg",
+        images: [
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/cf7a8187-3cac-4f94-8aff-5c6b8cd870d7.jpg",
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/0eb577e2-5f2c-4260-bf79-81c38709dfdf.jpg",
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/552849dd-72d2-4691-ac41-7aadea05c456.jpg",
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/73a778dd-872e-415f-866a-cb671b7d8fcf.jpg",
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/c3917c16-ab91-40f3-a67c-5921bb69c7e3.jpg",
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/2d70f628-8303-4a37-a82a-fad448d4d33c.jpg",
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/a231b7c4-cb58-48b8-bf28-c205cfd3f1df.jpg"
+        ],
+        tag: "خصم 20% 🔥"
+      },
+      {
+        id: 14,
+        name: "✨ كومبو 2 قطعة + 1 قطعة هدية شياكة وأناقة (جولد بليتد)",
+        price: 259,
+        oldPrice: 324,
+        category: "accessories",
+        brand: "براند الأصلي 👑",
+        image: "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/8375618e-8e0f-412a-88bf-4c9f1d620746.jpg",
+        tag: "خصم 20% 🔥"
+      },
+      {
+        id: 13,
+        name: "✨ اسورة آية الكرسي (استانلس بيور - 3 ألوان)",
+        price: 67,
+        oldPrice: 84,
+        category: "accessories",
+        brand: "براند الأصلي 👑",
+        image: "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/c7bdc6ca-4113-4050-bd6b-5d4826134b79.jpg",
+        images: [
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/c7bdc6ca-4113-4050-bd6b-5d4826134b79.jpg",
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/d68588c8-4cca-42ac-944d-a569e25c3989.jpg",
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/7830f7a0-2f70-4a85-913b-1c86205d1176.jpg",
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/52f89aea-095f-41ed-8967-54b671d0b001.jpg"
+        ],
+        tag: "خصم 20% 🔥"
+      },
+      {
+        id: 12,
+        name: "✨ سلسلة 11 ..11 (استانلس بيور عالي الجودة)",
+        price: 67,
+        oldPrice: 84,
+        category: "accessories",
+        brand: "براند الأصلي 👑",
+        image: "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/25d135b8-f00c-4a30-88be-5c3bdf5d19a6.jpg",
+        tag: "خصم 20% 🔥"
+      },
+
+      // ---------- إكسسوارات سابقة (5 منتجات) ----------
       {
         id: 7,
         name: "✨ سلاسل سيمبل ❤️ - سلسلة ستانليس بدلاية جولد بليتد 💯",
@@ -484,6 +583,67 @@
         image: "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/1f585c40-2a06-43e6-9bad-f1f9db8bf360.jpg",
         tag: "خصم 20% 🔥"
       },
+
+      // ---------- ساعات جديدة (4 منتجات) ----------
+      {
+        id: 22,
+        name: "✨ Cartier ⌚️ Stainless Steel 💎 (Women's)",
+        price: 336,
+        oldPrice: 420,
+        category: "watches",
+        brand: "براند الأصلي 👑",
+        image: "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/5d51801e-2d6c-4735-b010-612f849224df.jpg",
+        images: [
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/5d51801e-2d6c-4735-b010-612f849224df.jpg",
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/6593c09d-3ea4-4306-8dd1-69ca13ce0640.jpg",
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/e90ed523-caa4-4d0a-a973-c5b3cb8354dd.jpg"
+        ],
+        tag: "خصم 20% 🔥"
+      },
+      {
+        id: 21,
+        name: "✨ CK ⌚️ Stainless Steel 💎 (Women's)",
+        price: 307,
+        oldPrice: 384,
+        category: "watches",
+        brand: "براند الأصلي 👑",
+        image: "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/f7d41ce8-25f7-4351-bd61-eb6605f55709.jpg",
+        tag: "خصم 20% 🔥"
+      },
+      {
+        id: 20,
+        name: "🔥 New Collection ✨ ❤️‍فخامة وأناقة",
+        price: 192,
+        oldPrice: 240,
+        category: "watches",
+        brand: "براند الأصلي 👑",
+        image: "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/22660eb1-c90f-40b7-a757-860900644ecb.jpg",
+        images: [
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/22660eb1-c90f-40b7-a757-860900644ecb.jpg",
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/a7e71ae8-d9cb-4540-9b5a-bbde3d60ded6.jpg",
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/19016b6b-0cc7-4074-8420-c7e23a8fb8bf.jpg"
+        ],
+        tag: "خصم 20% 🔥"
+      },
+      {
+        id: 19,
+        name: "✨ Fossil ⌚️ High Quality 💎 (Men's)",
+        price: 720,
+        oldPrice: 900,
+        category: "watches",
+        brand: "براند الأصلي 👑",
+        image: "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/9097c022-dd1d-4df5-976d-21f104433f02.jpg",
+        images: [
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/9097c022-dd1d-4df5-976d-21f104433f02.jpg",
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/36a4fbc9-5d5f-4e83-ba6a-40cf295c2fa5.jpg",
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/d5c53cb5-78e2-4fdd-ad19-0eb2aba0e9d3.jpg",
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/95b7aeeb-5189-4f6e-a6bc-fb40ddb00c57.jpg",
+          "https://i.supaimg.com/f9b0e5ef-7508-4fde-b619-109bcc8438e4/8190c239-194c-4e5b-a654-bee9caf66697.jpg"
+        ],
+        tag: "خصم 20% 🔥"
+      },
+
+      // ---------- ساعات سابقة (2 منتجات) ----------
       {
         id: 2,
         name: "🔥 New Collection For Men’s - Rolex 🤍",
@@ -519,7 +679,7 @@
         if (error || !data || data.length === 0) {
           products = defaultProducts;
         } else {
-          products = data.length < 7 ? [...data, ...defaultProducts.filter(dp => !data.some(d => d.id === dp.id))] : data;
+          products = data.length < 18 ? [...data, ...defaultProducts.filter(dp => !data.some(d => d.id === dp.id))] : data;
         }
       } catch (e) {
         products = defaultProducts;
