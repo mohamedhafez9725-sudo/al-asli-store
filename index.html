@@ -194,7 +194,7 @@
     </div>
   </section>
 
-  <!-- CATALOG (تم ضبط الشبكة لتعرض 4 منتجات في الصف للموبايل والكمبيوتر) -->
+  <!-- CATALOG -->
   <section id="catalog" class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-12 flex-grow w-full">
     <div class="text-center space-y-3 mb-8">
       <span class="text-xs font-semibold tracking-widest text-gold-400 uppercase">Curated Catalog</span>
@@ -210,7 +210,7 @@
       <button onclick="filterProducts('accessories')" class="cat-btn px-4 py-2 rounded-full text-xs font-semibold uppercase transition-all bg-charcoal-800 text-gray-300 hover:text-gold-400 border border-gray-800 whitespace-nowrap" data-cat="accessories">Accessories ✨</button>
     </div>
 
-    <!-- RESPONSIVE GRID (4 أعمدة واضحة ومنظمة) -->
+    <!-- RESPONSIVE GRID -->
     <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
       <div class="col-span-full text-center py-12 text-gray-400 text-xs">جاري تحميل المنتجات...</div>
     </div>
@@ -422,7 +422,7 @@
     const SUPABASE_ANON_KEY = 'sb_publishable_L9o6bHpUQzrkJHFnmhwtNg_pOVHcp7J';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // قائمة المنتجات الكلية
+    // قائمة المنتجات الكلية المجهزة فوراً
     const defaultProducts = [
       {
         id: 18,
@@ -659,25 +659,26 @@
       }
     ];
 
-    let products = [], cart = [], currentCategoryFilter = 'all';
+    let products = defaultProducts, cart = [], currentCategoryFilter = 'all';
 
     window.addEventListener('DOMContentLoaded', () => {
-      fetchProductsFromSupabase();
+      // عرض المنتجات فوراً بدون انتظار Supabase لمنع أي تعليق
+      renderProducts(products);
+      
+      // محاولة جلب التحديثات في الخلفية بصمت
+      fetchProductsInBackground();
     });
 
-    async function fetchProductsFromSupabase() {
-      const grid = document.getElementById('product-grid');
+    async function fetchProductsInBackground() {
       try {
         const { data, error } = await supabaseClient.from('products').select('*').order('created_at', { ascending: false });
-        if (error || !data || data.length === 0) {
-          products = defaultProducts;
-        } else {
-          products = data.length < 18 ? [...data, ...defaultProducts.filter(dp => !data.some(d => d.id === dp.id))] : data;
+        if (!error && data && data.length > 0) {
+          products = data.length < defaultProducts.length ? [...data, ...defaultProducts.filter(dp => !data.some(d => d.id === dp.id))] : data;
+          renderProducts(currentCategoryFilter === 'all' ? products : products.filter(p => p.category === currentCategoryFilter));
         }
       } catch (e) {
-        products = defaultProducts;
+        // الاستمرار بالافتراضي في حالة قطع الاتصال
       }
-      renderProducts(currentCategoryFilter === 'all' ? products : products.filter(p => p.category === currentCategoryFilter));
     }
 
     function renderProducts(items) {
@@ -973,7 +974,7 @@
 
     async function saveProduct(e) {
       e.preventDefault();
-      .oldPriceVal = document.getElementById('p-old-price').value;
+      const oldPriceVal = document.getElementById('p-old-price').value;
       const newProduct = {
         id: Date.now(),
         name: document.getElementById('p-name').value,
@@ -1002,7 +1003,6 @@
 
     function openToast(msg) {
       const t = document.getElementById('toast');
-      document.getElementById('toast-msg').msg = msg;
       document.getElementById('toast-msg').innerText = msg;
       t.classList.remove('translate-y-12', 'opacity-0', 'pointer-events-none');
       setTimeout(() => t.classList.add('translate-y-12', 'opacity-0', 'pointer-events-none'), 3000);
